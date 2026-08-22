@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 250" width="920" height="250" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <title>Timer Panel Card in its running and idle states</title>
+
+  <g transform="translate(10 10)">
+    <rect width="430" height="230" rx="16" fill="#1b1f27" stroke="#2d323c"/>
+    <circle cx="52" cy="52" r="20" fill="#4a9eff" fill-opacity="0.18"/>
+    <path d="M43 45h18a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H43a2 2 0 0 1-2-2V47a2 2 0 0 1 2-2z" fill="none" stroke="#4a9eff" stroke-width="2"/>
+    <text x="84" y="47" fill="#e9ebee" font-size="16" font-weight="500">Living room TV</text>
+    <text x="84" y="68" fill="#98a0ad" font-size="13">On · ends 10:42 PM</text>
+    <text x="406" y="60" fill="#4a9eff" font-size="27" font-weight="500" text-anchor="end">42:13</text>
+
+    <rect x="24" y="92" width="382" height="7" rx="3.5" fill="#2d323c"/>
+    <rect x="24" y="92" width="237" height="7" rx="3.5" fill="#4a9eff"/>
+
+    <rect x="24" y="118" width="82" height="38" rx="19" fill="none" stroke="#3a4150"/>
+    <text x="65" y="142" fill="#e9ebee" font-size="14" text-anchor="middle">−15m</text>
+    <rect x="114" y="118" width="82" height="38" rx="19" fill="none" stroke="#3a4150"/>
+    <text x="155" y="142" fill="#e9ebee" font-size="14" text-anchor="middle">+15m</text>
+    <rect x="204" y="118" width="88" height="38" rx="19" fill="none" stroke="#f4655f"/>
+    <text x="248" y="142" fill="#f4655f" font-size="14" text-anchor="middle">Cancel</text>
+
+    <text x="24" y="186" fill="#98a0ad" font-size="12">Warns on screen at T-60s, then powers the TV down</text>
+    <text x="24" y="212" fill="#5f6672" font-size="11" font-style="italic">running</text>
+  </g>
+
+  <g transform="translate(480 10)">
+    <rect width="430" height="230" rx="16" fill="#1b1f27" stroke="#2d323c"/>
+    <circle cx="52" cy="52" r="20" fill="#98a0ad" fill-opacity="0.16"/>
+    <g fill="none" stroke="#98a0ad" stroke-width="2">
+      <circle cx="52" cy="52" r="3.5"/>
+      <path d="M52 48c0-5-3-8-7-7s-4 6 0 8M52 56c0 5 3 8 7 7s4-6 0-8M48 52c-5 0-8 3-7 7s6 4 8 0M56 52c5 0 8-3 7-7s-6-4-8 0"/>
+    </g>
+    <text x="84" y="47" fill="#e9ebee" font-size="16" font-weight="500">Kitchen exhaust</text>
+    <text x="84" y="68" fill="#98a0ad" font-size="13">Off</text>
+
+    <rect x="24" y="92" width="72" height="38" rx="19" fill="none" stroke="#3a4150"/>
+    <text x="60" y="116" fill="#e9ebee" font-size="14" text-anchor="middle">10m</text>
+    <rect x="104" y="92" width="72" height="38" rx="19" fill="none" stroke="#3a4150"/>
+    <text x="140" y="116" fill="#e9ebee" font-size="14" text-anchor="middle">30m</text>
+
+    <text x="24" y="160" fill="#98a0ad" font-size="12">Presets match the wall paddle; adds capped at 4 h</text>
+    <text x="24" y="212" fill="#5f6672" font-size="11" font-style="italic">idle — no countdown, no bar, only what you can start</text>
+  </g>
+</svg>

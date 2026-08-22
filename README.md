@@ -9,16 +9,7 @@ The point is the two states. **Idle**, the panel is a row of presets — the thi
 You never look at a control that does nothing right now, and a dashboard full of idle timers doesn't
 turn into a wall of identical buttons.
 
-```
-┌──────────────────────────────────────────────┐   ┌──────────────────────────────────────────────┐
-│ ◍  Living room TV                    42:13   │   │ ◍  Kitchen exhaust                           │
-│    On · ends 10:42 PM                        │   │    Off                                       │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░   │   │                                              │
-│ ( −15m ) ( +15m ) ( Cancel )                 │   │ ( 10m ) ( 30m )                              │
-│ Warns on screen at T-60s                     │   │ Presets match the wall paddle                │
-└──────────────────────────────────────────────┘   └──────────────────────────────────────────────┘
-                    running                                            idle
-```
+![Timer Panel Card, running and idle](docs/card.svg)
 
 ## Why not a template card
 
