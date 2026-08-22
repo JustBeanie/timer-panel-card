@@ -1,6 +1,6 @@
 /*! timer-panel-card — one panel per timer: live countdown, drain bar, state-aware controls. MIT. */
 
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 
 console.info(
   `%c TIMER-PANEL-CARD %c ${VERSION} `,
@@ -463,13 +463,19 @@ class TimerPanelCard extends HTMLElement {
   }
 }
 
-customElements.define("timer-panel-card", TimerPanelCard);
+/* Guarded: someone migrating from a manual /local/ copy to HACS ends up with the module
+   registered twice for one page load, and an unguarded define() throws on the second. */
+if (!customElements.get("timer-panel-card")) {
+  customElements.define("timer-panel-card", TimerPanelCard);
+}
 
 window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "timer-panel-card",
-  name: "Timer Panel Card",
-  description: "A timer entity as one panel: live countdown, drain bar, and state-aware controls.",
-  preview: false,
-  documentationURL: "https://github.com/JustBeanie/timer-panel-card",
-});
+if (!window.customCards.some((card) => card.type === "timer-panel-card")) {
+  window.customCards.push({
+    type: "timer-panel-card",
+    name: "Timer Panel Card",
+    description: "A timer entity as one panel: live countdown, drain bar, and state-aware controls.",
+    preview: false,
+    documentationURL: "https://github.com/JustBeanie/timer-panel-card",
+  });
+}
