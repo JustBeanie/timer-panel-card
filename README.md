@@ -11,6 +11,8 @@ turn into a wall of identical buttons.
 
 ![Timer Panel Card, running and idle](docs/card.svg)
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=JustBeanie&repository=timer-panel-card&category=frontend)
+
 ## Why not a template card
 
 A `timer` entity emits **no state changes while it counts down** — only `idle → active` and back. A
@@ -22,6 +24,8 @@ does, so it costs nothing on the backend and never looks frozen.
 ## Install
 
 ### HACS
+
+Click the button above, or add it by hand:
 
 1. HACS → three-dot menu → **Custom repositories**
 2. Repository `JustBeanie/timer-panel-card`, type **Dashboard**
