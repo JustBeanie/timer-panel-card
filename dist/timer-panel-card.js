@@ -66,7 +66,7 @@ class TimerPanelCard extends HTMLElement {
   }
 
   setConfig(config) {
-    if (!config || !config.timer) {
+    if (!config || typeof config.timer !== "string" || !config.timer) {
       throw new Error("timer-panel-card: a `timer` entity is required");
     }
     if (!config.timer.startsWith("timer.")) {
@@ -94,7 +94,9 @@ class TimerPanelCard extends HTMLElement {
   }
 
   getGridOptions() {
-    return { columns: 12, min_columns: 6, rows: "auto" };
+    // `rows` is intentionally omitted: Home Assistant documents it as a
+    // numeric grid value, and omitting it lets the card size itself naturally.
+    return { columns: 12, min_columns: 6 };
   }
 
   connectedCallback() {
@@ -292,12 +294,15 @@ class TimerPanelCard extends HTMLElement {
 
     if (!timer) {
       els.name.textContent = cfg.name || cfg.timer;
-      els.secondary.innerHTML = `<span class="missing">Entity not found: ${cfg.timer}</span>`;
+      els.secondary.textContent = `Entity not found: ${cfg.timer}`;
+      els.secondary.classList.add("missing");
       els.time.hidden = true;
       els.track.hidden = true;
       els.buttons.hidden = true;
       return;
     }
+
+    els.secondary.classList.remove("missing");
 
     const device = cfg.device ? this._hass.states[cfg.device] : null;
     const state = timer.state;
