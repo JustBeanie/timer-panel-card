@@ -23,13 +23,16 @@ does, so it costs nothing on the backend and never looks frozen.
 
 ## Install
 
-### HACS
+### Marketplace (HACS)
+
+Since Home Assistant 2026.11, HACS is built into core as the **Marketplace**
+(Settings → Marketplace). On older versions, use the HACS integration; the steps are the same.
 
 Click the button above, or add it by hand:
 
-1. HACS → three-dot menu → **Custom repositories**
+1. Marketplace (or HACS) → three-dot menu → **Custom repositories**
 2. Repository `JustBeanie/timer-panel-card`, type **Dashboard**
-3. Find "Timer Panel Card" in HACS and download it
+3. Find "Timer Panel Card" and download it
 4. Hard-refresh the browser (Ctrl/Cmd + Shift + R)
 
 ### Manual
@@ -44,7 +47,7 @@ Copy `dist/timer-panel-card.js` to `<config>/www/` and add a dashboard resource 
 | `type` | string | — | `custom:timer-panel-card` |
 | `timer` | string | **required** | A `timer.*` entity |
 | `device` | string | — | Companion entity — the TV, fan or light the timer governs. Any domain. Drives the second line and the idle icon tint |
-| `name` | string | device / timer name | Panel title |
+| `name` | string or name parts | device / timer name | Panel title. A string is used as typed; name parts such as `[{type: area}, {type: entity}]` are composed by Home Assistant (2026.4+). |
 | `icon` | string | timer's icon | Any `mdi:` icon |
 | `secondary` | string | derived | Replaces the auto-generated second line |
 | `device_attribute` | string | — | Extra attribute appended to the second line while the device is on, e.g. `app_name` |

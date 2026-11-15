@@ -1,6 +1,6 @@
 /*! timer-panel-card — one panel per timer: live countdown, drain bar, state-aware controls. MIT. */
 
-const VERSION = "1.0.1";
+const VERSION = "1.0.2";
 
 console.info(
   `%c TIMER-PANEL-CARD %c ${VERSION} `,
@@ -11,6 +11,9 @@ console.info(
 const IDLE = "idle";
 const ACTIVE = "active";
 const PAUSED = "paused";
+
+/* The frontend's own default composition for a full entity name. */
+const FULL_NAME = [{ type: "parent_device" }, { type: "device" }, { type: "entity" }];
 
 /* States that mean "this device is not doing anything", whatever its domain. */
 const OFF_STATES = new Set(["off", "idle", "standby", "unavailable", "unknown", "closed", "not_home"]);
@@ -308,11 +311,7 @@ class TimerPanelCard extends HTMLElement {
     const state = timer.state;
     const running = state === ACTIVE || state === PAUSED;
 
-    els.name.textContent =
-      cfg.name ||
-      (device && device.attributes.friendly_name) ||
-      timer.attributes.friendly_name ||
-      cfg.timer;
+    els.name.textContent = this._title(timer, device);
 
     els.icon.setAttribute("icon", cfg.icon || timer.attributes.icon || "mdi:timer-outline");
     els.secondary.textContent = this._secondaryText(timer, device);
@@ -327,6 +326,32 @@ class TimerPanelCard extends HTMLElement {
 
     this._paint();
     this._sync();
+  }
+
+  /* Title: a typed `name` wins, then the device's name, then the timer's. Since 2026.11 Home
+     Assistant composes display names from the registry (device + entity), so names go through
+     hass.formatEntityName (2026.4+) when it exists, and fall back to friendly_name before that. */
+  _title(timer, device) {
+    const name = this._config.name;
+    if (typeof name === "string" && name) return name;
+    const subject = device || timer;
+    if (name && typeof name === "object") {
+      const formatted = this._entityName(subject, name);
+      if (formatted) return formatted;
+    }
+    return this._entityName(subject) || this._config.timer;
+  }
+
+  _entityName(stateObj, parts = FULL_NAME) {
+    if (typeof this._hass.formatEntityName === "function") {
+      try {
+        const formatted = this._hass.formatEntityName(stateObj, parts);
+        if (formatted) return formatted;
+      } catch (err) {
+        /* Malformed name config or an older helper: fall back below. */
+      }
+    }
+    return stateObj.attributes.friendly_name;
   }
 
   _secondaryText(timer, device) {
