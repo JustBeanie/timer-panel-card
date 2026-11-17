@@ -88,4 +88,3 @@ than the duration used to start it. The button stays visible while paused. See
 - The second line is derived: the device's state, then `ends 10:42 PM` while running, `paused` when
   paused, or `no timer set` when the timer is idle and the device is on. `secondary` overrides all
   of it.
-
