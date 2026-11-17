@@ -12,7 +12,7 @@ countdown and progress bar when running, and the device's status alongside it.
 
 ![Timer Panel Card preview: running on the left, idle on the right](docs/card.svg)
 
-[![Open Timer Panel Card in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=JustBeanie&repository=timer-panel-card&category=frontend)
+[![Open Timer Panel Card in Marketplace](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=JustBeanie&repository=timer-panel-card&category=frontend)
 
 [Quick start](#quick-start) · [Examples](examples/README.md) · [All options](docs/configuration.md) · [Troubleshooting](docs/troubleshooting.md)
 
@@ -27,14 +27,16 @@ notifications need separate Home Assistant automations.
 
 ### 1. Install the card
 
-Timer Panel Card is included in the default HACS catalog. Click the HACS button above, or:
+Timer Panel Card is included in the default catalog. **Marketplace is built into Home Assistant
+2026.11 and newer**; on older versions, use HACS. Click the button above, or:
 
 1. Open **Marketplace** (Home Assistant 2026.11+) or **HACS** on older versions.
 2. Search for **Timer Panel Card** and open it.
 3. Download the card, then refresh your browser.
 
 Can't find it yet? [Refresh the catalog or add the repository manually](docs/troubleshooting.md#cannot-find-the-card-in-hacs).
-For an installation without HACS, use the [manual installation steps](docs/troubleshooting.md#manual-installation).
+For advanced setups that manage JavaScript resources directly, see
+[manual resource installation](docs/troubleshooting.md#manual-resource-installation).
 
 ### 2. Choose a timer
 
@@ -97,7 +99,7 @@ The [example guide](examples/README.md) explains which IDs to replace and what e
 
 ## Updates and help
 
-Update through HACS/Marketplace, then reload your dashboard. Manual installs replace the JS file
+Update through Marketplace (HACS on older versions), then reload your dashboard. Manual installs replace the JS file
 and update its resource URL's version query. [Update and cache help](docs/troubleshooting.md#the-card-still-looks-like-an-older-version).
 
 - [Troubleshooting](docs/troubleshooting.md): loading problems, missing entities, buttons, and timers.

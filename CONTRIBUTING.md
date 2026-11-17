@@ -35,7 +35,7 @@ Do not include personal dashboard configuration or credentials in the PR.
 
 ## Checking a card change
 
-Use a test dashboard and timer helper. Follow the [manual installation steps](docs/troubleshooting.md#manual-installation)
+Use a test dashboard and timer helper. Follow the [manual resource installation steps](docs/troubleshooting.md#manual-resource-installation)
 to load your edited JS, using a fresh resource URL query string after each change. Keep one
 resource registration; an existing HACS copy can otherwise mask your changes.
 
