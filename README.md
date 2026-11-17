@@ -49,8 +49,14 @@ name such as **Kitchen** and save it.
 ### 3. Add the panel
 
 1. Edit your dashboard and choose **Add card**. Open **By card** if shown, then search for **Timer Panel Card**.
+   Select the card to open its visual editor.
+
+   ![Home Assistant's By card tab with Timer Panel Card in the search results](docs/card-picker.png)
+
 2. Select your **Timer helper**. You can also select a **Companion entity** to show its status.
 3. Save the card. The default buttons start a 15-minute timer and cancel it.
+
+   ![Timer Panel Card visual editor with Kitchen timer selected, Idle buttons expanded, a live preview, and the Save button](docs/visual-editor.png)
 
 **Try it:** press **15m**. The countdown and progress bar appear, and the preset becomes **Cancel**.
 Tap the header to open Home Assistant's timer controls. Press **Cancel** to return to the preset.
