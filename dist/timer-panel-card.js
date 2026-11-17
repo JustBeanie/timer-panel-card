@@ -1,6 +1,6 @@
 /*! timer-panel-card — one panel per timer: live countdown, drain bar, state-aware controls. MIT. */
 
-const VERSION = "1.0.5";
+const VERSION = "1.1.0";
 
 console.info(
   `%c TIMER-PANEL-CARD %c ${VERSION} `,
@@ -12,6 +12,7 @@ const IDLE = "idle";
 const ACTIVE = "active";
 const PAUSED = "paused";
 const UNAVAILABLE_STATES = new Set(["unavailable", "unknown"]);
+const TIMER_PLACEHOLDER = "timer.example";
 
 /* The frontend's own default composition for a full entity name. */
 const FULL_NAME = [{ type: "parent_device" }, { type: "device" }, { type: "entity" }];
@@ -42,6 +43,24 @@ function formatRemaining(seconds) {
   return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${m}:${pad(sec)}`;
 }
 
+function starterButton(group) {
+  if (group === "idle_buttons") {
+    return {
+      label: "15m",
+      action: {
+        action: "perform-action",
+        perform_action: "timer.start",
+        data: { duration: "00:15:00" },
+      },
+    };
+  }
+  return {
+    label: "Cancel",
+    style: "danger",
+    action: { action: "perform-action", perform_action: "timer.cancel" },
+  };
+}
+
 class TimerPanelCard extends HTMLElement {
   constructor() {
     super();
@@ -50,24 +69,24 @@ class TimerPanelCard extends HTMLElement {
     this._els = null;
   }
 
-  static getStubConfig(hass) {
-    const timer = Object.keys(hass?.states ?? {}).find((id) => id.startsWith("timer."));
+  static getStubConfig(hass, entities = [], entitiesFallback = []) {
+    const states = hass?.states ?? {};
+    const timer = [...entities, ...entitiesFallback, ...Object.keys(states)].find(
+      (id) => id.startsWith("timer.") && states[id] && !UNAVAILABLE_STATES.has(states[id].state)
+    );
     return {
-      timer: timer || "timer.example",
-      idle_buttons: [
-        {
-          label: "15m",
-          action: {
-            action: "perform-action",
-            perform_action: "timer.start",
-            data: { duration: "00:15:00" },
-          },
-        },
-      ],
-      running_buttons: [
-        { label: "Cancel", style: "danger", action: { action: "perform-action", perform_action: "timer.cancel" } },
-      ],
+      timer: timer ?? TIMER_PLACEHOLDER,
+      idle_buttons: [starterButton("idle_buttons")],
+      running_buttons: [starterButton("running_buttons")],
     };
+  }
+
+  static async getConfigElement() {
+    // The built-in Tile editor loads ha-form on older Home Assistant frontends.
+    if (!customElements.get("ha-form")) {
+      await customElements.get("hui-tile-card")?.getConfigElement?.();
+    }
+    return document.createElement("timer-panel-card-editor");
   }
 
   setConfig(config) {
@@ -299,7 +318,9 @@ class TimerPanelCard extends HTMLElement {
     els.icon.setAttribute("icon", cfg.icon || timer?.attributes.icon || "mdi:timer-outline");
     els.secondary.classList.toggle("missing", unavailable);
     if (!timer) {
-      els.secondary.textContent = `Entity not found: ${cfg.timer}`;
+      els.secondary.textContent = cfg.timer === TIMER_PLACEHOLDER
+        ? "Choose a timer helper in the card editor"
+        : `Entity not found: ${cfg.timer}`;
     } else if (unavailable) {
       els.secondary.textContent = "Timer unavailable";
     } else {
@@ -488,10 +509,326 @@ class TimerPanelCard extends HTMLElement {
   }
 }
 
+const ENTITY_FIELDS = [
+  { name: "timer", required: true, selector: { entity: { filter: { domain: "timer" } } } },
+  { name: "device", selector: { entity: {} } },
+];
+const DISPLAY_FIELDS = [
+  { name: "name", selector: { text: {} } },
+  { name: "icon", selector: { icon: {} } },
+  { name: "secondary", selector: { text: {} } },
+  { name: "device_attribute", selector: { text: {} } },
+  { name: "footer", selector: { text: {} } },
+  { name: "caution_seconds", selector: { number: { min: 0, mode: "box", unit_of_measurement: "s" } } },
+  { name: "warn_seconds", selector: { number: { min: 0, mode: "box", unit_of_measurement: "s" } } },
+];
+const UI_ACTIONS = ["perform-action", "more-info", "navigate", "url", "none"];
+const BUTTON_STYLES = [
+  { value: "outline", label: "Outline" },
+  { value: "accent", label: "Accent" },
+  { value: "danger", label: "Danger" },
+];
+const BUTTON_FIELDS = [
+  { name: "label", selector: { text: {} } },
+  { name: "icon", selector: { icon: {} } },
+  { name: "style", selector: { select: { mode: "dropdown", options: BUTTON_STYLES } } },
+  { name: "action", selector: { ui_action: { actions: UI_ACTIONS, default_action: "none" } } },
+];
+const MORE_INFO_FIELDS = [
+  ...BUTTON_FIELDS,
+  { name: "more_info_entity", selector: { entity: {} } },
+];
+const URL_FIELDS = [
+  ...BUTTON_FIELDS,
+  { name: "same_tab", selector: { boolean: {} } },
+];
+const FIELD_LABELS = {
+  timer: "Timer helper",
+  device: "Companion entity (optional)",
+  name: "Panel title",
+  icon: "Icon",
+  secondary: "Subtitle override",
+  device_attribute: "Device attribute",
+  footer: "Footer",
+  caution_seconds: "Caution threshold",
+  warn_seconds: "Warning threshold",
+  label: "Button label",
+  style: "Button style",
+  action: "Button action",
+  more_info_entity: "Entity to open (optional)",
+  same_tab: "Open in this tab",
+};
+const FIELD_HELP = {
+  device: "Show this entity’s status on the panel.",
+  caution_seconds: "Defaults to 300 seconds.",
+  warn_seconds: "Defaults to 60 seconds.",
+  action: "Timer actions use the card’s timer when no target is set.",
+  more_info_entity: "Leave empty to open the card’s timer.",
+};
+
+function applyFields(config, fields, values) {
+  const next = { ...config };
+  for (const key of fields) {
+    if (!Object.hasOwn(values, key)) continue;
+    if (values[key] == null || values[key] === "") delete next[key];
+    else next[key] = values[key];
+  }
+  return next;
+}
+
+function editorAction(action) {
+  let kind = action?.action;
+  if (kind === "call-service") kind = "perform-action";
+  kind ??= action?.service || action?.perform_action ? "perform-action" : "none";
+  return { ...action, action: kind };
+}
+
+class TimerPanelCardEditor extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
+
+  setConfig(config) {
+    this._config = { ...config };
+    this._update();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    this._update();
+  }
+
+  _update() {
+    if (!this._config || !this._hass) return;
+    if (!this._forms) this._build();
+
+    const { timer, device, ...display } = this._config;
+    const states = this._hass.states;
+    const selectedTimer = timer === TIMER_PLACEHOLDER && !states[timer] ? undefined : timer;
+    this._setForm(this._forms.entities, { timer: selectedTimer, device });
+    const displayData = Object.fromEntries(DISPLAY_FIELDS.map(({ name }) => [name, display[name]]));
+    const composedTitle = display.name != null && typeof display.name !== "string";
+    if (composedTitle) delete displayData.name;
+    this._setForm(this._forms.display, displayData);
+    this.shadowRoot.querySelector(".composed-title").hidden = !composedTitle;
+    this.shadowRoot.querySelector(".no-timers").hidden = Object.keys(states).some(
+      (id) => id.startsWith("timer.")
+    );
+    this._updateButtons("idle_buttons");
+    this._updateButtons("running_buttons");
+  }
+
+  _build() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: block; color: var(--primary-text-color); }
+        p { margin: 0 0 12px; color: var(--secondary-text-color); }
+        .no-timers { margin-top: 12px; }
+        details { border-top: 1px solid var(--divider-color); margin-top: 12px; }
+        summary { cursor: pointer; padding: 12px 0; font-weight: 500; overflow-wrap: anywhere; }
+        summary small { color: var(--secondary-text-color); font-weight: 400; margin-inline-start: 8px; }
+        .button-row { margin-top: 0; }
+        .button-row summary { font-weight: 400; }
+        .controls { display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 8px 0; }
+        button {
+          font: inherit;
+          color: var(--primary-color);
+          background: transparent;
+          border: 1px solid var(--divider-color);
+          border-radius: 6px;
+          padding: 6px 10px;
+          min-height: 36px;
+          cursor: pointer;
+        }
+        button:disabled { color: var(--disabled-text-color); cursor: default; }
+        button:focus-visible, summary:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+      </style>
+      <div class="entities"></div>
+      <p class="no-timers" hidden>Create a Timer helper under Settings → Devices &amp; services → Helpers, then select it here.</p>
+      <details>
+        <summary>Appearance and warnings</summary>
+        <p class="composed-title" hidden>A title made of name parts is set in YAML. Enter a title here to replace it.</p>
+        <div class="display"></div>
+      </details>
+      <details data-group="idle_buttons">
+        <summary>Idle buttons <small></small></summary>
+        <p>Shown before the timer starts and after it finishes.</p>
+        <div class="rows"></div>
+        <div class="controls"><button type="button">Add idle button</button></div>
+      </details>
+      <details data-group="running_buttons">
+        <summary>Running buttons <small></small></summary>
+        <p>Shown while the timer is running or paused.</p>
+        <div class="rows"></div>
+        <div class="controls"><button type="button">Add running button</button></div>
+      </details>
+    `;
+    this._forms = {
+      entities: this._form(ENTITY_FIELDS, (values) => {
+        const config = applyFields(this._config, ["timer", "device"], values);
+        config.timer ??= TIMER_PLACEHOLDER;
+        this._emit(config);
+      }),
+      display: this._form(DISPLAY_FIELDS, (values) => {
+        this._emit(applyFields(this._config, DISPLAY_FIELDS.map(({ name }) => name), values));
+      }),
+    };
+    for (const [key, form] of Object.entries(this._forms)) {
+      this.shadowRoot.querySelector(`.${key}`).append(form);
+    }
+    for (const group of ["idle_buttons", "running_buttons"]) {
+      this._group(group).querySelector("button").addEventListener("click", () => {
+        const list = this._buttons(group);
+        this._emit({ ...this._config, [group]: [...list, starterButton(group)] });
+        const row = this._group(group).querySelector(".rows").lastElementChild;
+        row.open = true;
+        row.querySelector("summary").focus();
+      });
+    }
+  }
+
+  _form(schema, change) {
+    const form = document.createElement("ha-form");
+    form.schema = schema;
+    form.computeLabel = ({ name }) => FIELD_LABELS[name];
+    form.computeHelper = ({ name }) => FIELD_HELP[name];
+    form.addEventListener("value-changed", (event) => {
+      if (event.target !== form || !event.detail?.value) return;
+      event.stopPropagation();
+      change(event.detail.value);
+    });
+    return form;
+  }
+
+  _setForm(form, data) {
+    form.hass = this._hass;
+    if (JSON.stringify(form.data) !== JSON.stringify(data)) form.data = data;
+  }
+
+  _group(group) {
+    return this.shadowRoot.querySelector(`[data-group="${group}"]`);
+  }
+
+  _buttons(group) {
+    const buttons = this._config[group];
+    return Array.isArray(buttons) ? buttons : [];
+  }
+
+  _updateButtons(group) {
+    const list = this._buttons(group);
+    const section = this._group(group);
+    const rows = section.querySelector(".rows");
+    section.querySelector("small").textContent = String(list.length);
+    while (rows.children.length > list.length) rows.lastElementChild.remove();
+    list.forEach((button, index) => {
+      let row = rows.children[index];
+      if (!row) {
+        row = this._buttonRow(group, index);
+        rows.append(row);
+      }
+      row.querySelector("summary").textContent = button?.label || button?.icon || `Button ${index + 1}`;
+      const form = row.querySelector("ha-form");
+      const action = editorAction(button?.action);
+      const actionKind = action.action;
+      form.schema = actionKind === "more-info"
+        ? MORE_INFO_FIELDS
+        : actionKind === "url" ? URL_FIELDS : BUTTON_FIELDS;
+      const data = { label: button?.label, icon: button?.icon, style: button?.style ?? "outline", action };
+      if (actionKind === "more-info") data.more_info_entity = action.entity;
+      if (actionKind === "url") data.same_tab = action.new_tab === false;
+      row.querySelector(".legacy-action").hidden = UI_ACTIONS.includes(actionKind);
+      this._setForm(form, data);
+      row.querySelector(".move-up").disabled = index === 0;
+      row.querySelector(".move-down").disabled = index === list.length - 1;
+    });
+  }
+
+  _buttonRow(group, index) {
+    const row = document.createElement("details");
+    row.className = "button-row";
+    row.innerHTML = `
+      <summary></summary>
+      <p class="legacy-action" hidden>This action comes from YAML. Choose another action to replace it.</p>
+      <div class="controls">
+        <button type="button" class="move-up">Move up</button>
+        <button type="button" class="move-down">Move down</button>
+        <button type="button" class="remove">Remove button</button>
+      </div>
+    `;
+    row.querySelector(".controls").before(this._form(BUTTON_FIELDS, (values) => {
+      const list = [...this._buttons(group)];
+      const previous = list[index];
+      const button = applyFields(previous, ["label", "icon", "style"], values);
+      if (button.style === "outline") delete button.style;
+      const action = values.action ?? { action: "none" };
+      const oldAction = previous?.action;
+      const before = editorAction(oldAction);
+      if (JSON.stringify(action) !== JSON.stringify(before)) {
+        button.action = { ...action };
+        // Home Assistant emits an empty target for an unselected target.
+        // Keep the card's default target for timer actions and preserve explicit YAML targets.
+        const service = action.perform_action;
+        const explicitEmptyTarget = service === (oldAction?.perform_action ?? oldAction?.service)
+          && oldAction?.target && Object.keys(oldAction.target).length === 0;
+        if (typeof service === "string" && service.startsWith("timer.") && !explicitEmptyTarget &&
+          action.target && Object.keys(action.target).length === 0) {
+          delete button.action.target;
+        }
+      }
+      if (action.action === "more-info" && Object.hasOwn(values, "more_info_entity") &&
+        values.more_info_entity !== before.entity) {
+        button.action = applyFields(button.action, ["entity"], { entity: values.more_info_entity });
+      }
+      if (action.action === "url" && Object.hasOwn(values, "same_tab") &&
+        values.same_tab !== (before.new_tab === false)) {
+        button.action = applyFields(button.action, ["new_tab"], { new_tab: values.same_tab ? false : undefined });
+      }
+      list[index] = button;
+      this._emit({ ...this._config, [group]: list });
+    }));
+    row.querySelector(".move-up").addEventListener("click", () => this._moveButton(group, index, index - 1));
+    row.querySelector(".move-down").addEventListener("click", () => this._moveButton(group, index, index + 1));
+    row.querySelector(".remove").addEventListener("click", () => {
+      const list = this._buttons(group).filter((_, i) => i !== index);
+      this._emit({ ...this._config, [group]: list });
+      const section = this._group(group);
+      const nextRow = section.querySelector(".rows").children[index];
+      (nextRow?.querySelector("summary") ?? section.querySelector(":scope > .controls > button")).focus();
+    });
+    return row;
+  }
+
+  _moveButton(group, from, to) {
+    const list = [...this._buttons(group)];
+    if (to < 0 || to >= list.length) return;
+    [list[from], list[to]] = [list[to], list[from]];
+    this._emit({ ...this._config, [group]: list });
+    const rows = this._group(group).querySelector(".rows").children;
+    rows[from].open = false;
+    rows[to].open = true;
+    rows[to].querySelector("summary").focus();
+  }
+
+  _emit(config) {
+    if (JSON.stringify(config) === JSON.stringify(this._config)) return;
+    this._config = config;
+    this._update();
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+}
+
 /* Guarded: someone migrating from a manual /local/ copy to HACS ends up with the module
    registered twice for one page load, and an unguarded define() throws on the second. */
 if (!customElements.get("timer-panel-card")) {
   customElements.define("timer-panel-card", TimerPanelCard);
+}
+if (!customElements.get("timer-panel-card-editor")) {
+  customElements.define("timer-panel-card-editor", TimerPanelCardEditor);
 }
 
 window.customCards = window.customCards || [];
@@ -500,7 +837,7 @@ if (!window.customCards.some((card) => card.type === "timer-panel-card")) {
     type: "timer-panel-card",
     name: "Timer Panel Card",
     description: "A timer entity as one panel: live countdown, drain bar, and state-aware controls.",
-    preview: false,
+    preview: true,
     documentationURL: "https://github.com/JustBeanie/timer-panel-card",
   });
 }

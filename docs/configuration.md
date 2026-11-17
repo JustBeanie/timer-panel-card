@@ -2,8 +2,13 @@
 
 [Back to the quick start](../README.md#quick-start) · [Examples](../examples/README.md) · [Troubleshooting](troubleshooting.md)
 
-Edit these options in the dashboard card’s YAML editor. Start with a working example, then add
-only the options you need. Button lists default to empty; omitting them gives a display-only card.
+Search for **Timer Panel Card** under **Add card** to configure the panel visually. Select a timer
+helper, then use **Appearance and warnings**, **Idle buttons**, and **Running buttons** to customize
+it. The buttons can run Home Assistant actions, open entity details, navigate, or open a URL.
+
+Use **Show code editor** for YAML configurations and the examples below. A picker-created card
+comes with a 15-minute preset and Cancel. When writing YAML, you can omit both button lists
+to make a display-only panel.
 
 ## Card options
 
