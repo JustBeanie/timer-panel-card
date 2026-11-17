@@ -1,6 +1,6 @@
 /*! timer-panel-card — one panel per timer: live countdown, drain bar, state-aware controls. MIT. */
 
-const VERSION = "1.0.2";
+const VERSION = "1.0.3";
 
 console.info(
   `%c TIMER-PANEL-CARD %c ${VERSION} `,

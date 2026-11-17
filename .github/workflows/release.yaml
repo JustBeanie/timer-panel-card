@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Check distributed JavaScript
+        run: node --check dist/timer-panel-card.js
+      - name: Check release tag and package
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node scripts/check-release.mjs "$RELEASE_TAG"
+      - name: HACS validation
+        uses: hacs/action@main
+        with:
+          category: plugin
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create checksum
+        working-directory: dist
+        run: sha256sum timer-panel-card.js > SHA256SUMS
+      - name: Publish validated release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            dist/timer-panel-card.js dist/SHA256SUMS \
+            --verify-tag --title "$RELEASE_TAG" --generate-notes \
+            --notes "HACS validation passed before publication: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"

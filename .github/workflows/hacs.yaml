@@ -13,8 +13,21 @@ jobs:
   validate:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
       - name: HACS validation
         uses: "hacs/action@main"
         with:
           category: "plugin"
+
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Check distributed JavaScript
+        run: node --check dist/timer-panel-card.js
+      - name: Check HACS package and version
+        run: node scripts/check-release.mjs
