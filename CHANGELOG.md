@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-11-16
+
+- Validate the distributed JavaScript, manifest filename, version, and changelog before releases.
+- Publish the JavaScript download and checksum only after HACS validation passes, with no ignored checks.
+- Remove the obsolete `render_readme` manifest option; HACS uses the README automatically.
+- Add a minimal setup example, resource troubleshooting, and a sourced comparison with existing timer cards.
+- Clarify that device shutdown needs an automation, paused timers share the running controls,
+  `timer.change` has duration limits, and only the documented action subset is supported.
+- Document the default-catalog submission process. Card behavior is unchanged.
+
 ## [1.0.2] - 2026-11-14
 
 - Panel titles now come from `hass.formatEntityName` (Home Assistant 2026.4+), so they match
