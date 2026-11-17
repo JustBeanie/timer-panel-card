@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-11-17
+
+- Include dark theme screenshots of the card picker and visual editor in the released README for Marketplace.
+
 ## [1.1.0] - 2026-11-17
 
 - Set up Timer Panel Card from the dashboard card picker with Home Assistant’s visual editor.
