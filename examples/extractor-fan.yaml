@@ -1,0 +1,31 @@
+# Paste into Dashboard > Edit > Add card > Manual.
+# Replace the example entity IDs with your own.
+# Fan off stops the fan but does not cancel the timer.
+type: custom:timer-panel-card
+timer: timer.kitchen_exhaust
+device: fan.kitchen_exhaust
+name: Kitchen exhaust
+icon: mdi:fan
+caution_seconds: 120
+idle_buttons:
+  - label: 10m
+    action:
+      action: perform-action
+      perform_action: timer.start
+      data:
+        duration: "00:10:00"
+  - label: 30m
+    action:
+      action: perform-action
+      perform_action: timer.start
+      data:
+        duration: "00:30:00"
+running_buttons:
+  - label: Fan off
+    style: danger
+    icon: mdi:fan-off
+    action:
+      action: perform-action
+      perform_action: fan.turn_off
+      target:
+        entity_id: fan.kitchen_exhaust

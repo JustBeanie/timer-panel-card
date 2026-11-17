@@ -1,0 +1,23 @@
+name: Suggest an improvement
+description: Share a task that Timer Panel Card could make easier.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: What are you trying to do?
+      description: Describe the task and what gets in your way today.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: How could the card help?
+      description: Describe the behavior you would like. Examples or screenshots are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Current workaround
+      description: If you already solve this with another card or automation, tell us how.

@@ -1,0 +1,38 @@
+# Paste into Dashboard > Edit > Add card > Manual.
+# Replace the example entity IDs with your own.
+# Device shutdown needs a separate Home Assistant automation.
+type: custom:timer-panel-card
+timer: timer.living_room_tv
+device: media_player.living_room_tv
+name: Living room TV
+icon: mdi:television
+footer: TV shutdown requires a separate automation
+idle_buttons:
+  - label: 30m
+    action:
+      action: perform-action
+      perform_action: timer.start
+      data:
+        duration: "00:30:00"
+  - label: 1h
+    action:
+      action: perform-action
+      perform_action: timer.start
+      data:
+        duration: "01:00:00"
+  - label: 2h
+    action:
+      action: perform-action
+      perform_action: timer.start
+      data:
+        duration: "02:00:00"
+running_buttons:
+  - label: Timer controls
+    icon: mdi:timer-outline
+    action:
+      action: more-info
+  - label: Cancel
+    style: danger
+    action:
+      action: perform-action
+      perform_action: timer.cancel

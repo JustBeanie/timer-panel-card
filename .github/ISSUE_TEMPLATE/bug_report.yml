@@ -1,0 +1,56 @@
+name: Report a problem
+description: Something is not loading, displaying, or working as expected.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [troubleshooting guide](https://github.com/JustBeanie/timer-panel-card/blob/main/docs/troubleshooting.md) first.
+        Remove passwords, tokens, private URLs, and personal information before sharing.
+  - type: input
+    id: card_version
+    attributes:
+      label: Timer Panel Card version
+      description: Find this in HACS or the TIMER-PANEL-CARD message in the browser console.
+      placeholder: e.g. 1.0.3
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      description: Find this under Settings → About.
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation method
+      options:
+        - HACS / Marketplace
+        - Manual JavaScript resource
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser or Companion app
+      placeholder: e.g. Chrome on Windows, Safari on iPhone, Android Companion app
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened, and what did you expect?
+      description: Include steps to reproduce and whether the timer was idle, active, or paused.
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Card YAML
+      description: Paste the smallest configuration that shows the problem, with sensitive details removed.
+      render: yaml
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or error messages
+      description: Attach screenshots or paste relevant browser console errors. This is optional.
