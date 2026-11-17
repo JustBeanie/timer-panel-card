@@ -5,14 +5,16 @@
 ## Cannot find the card in HACS
 
 Timer Panel Card is in the [default catalog](https://github.com/hacs/default/pull/14348).
-Refresh Marketplace (HACS on older versions) and search for **Timer Panel Card**. A newly approved listing can take
-up to eight hours to appear, according to the [HACS approval notice](https://github.com/hacs/default/pull/14348#issuecomment-6940677926).
+Refresh the catalog and search for **Timer Panel Card**. You can also use the
+[Open in Marketplace button](../README.md). If your catalog has not updated, add the
+repository URL `https://github.com/JustBeanie/timer-panel-card` directly:
 
-If your catalog has not updated, use this fallback:
+- **Marketplace (2026.11+):** In **Settings → Marketplace**, choose **Add from link**.
+  Connect GitHub if prompted, paste the URL, and select **Add**.
+- **Older HACS:** Open the three-dot menu → **Custom repositories**. Add the URL
+  as a **Dashboard** repository.
 
-1. Open Marketplace (HACS on older versions) → three-dot menu → **Custom repositories**.
-2. Add `https://github.com/JustBeanie/timer-panel-card` with category **Dashboard**.
-3. Search for **Timer Panel Card**, download it, and refresh your browser.
+Open the card's listing, install it, and refresh your browser.
 
 ## “Custom element doesn't exist: timer-panel-card”
 
@@ -20,14 +22,18 @@ The browser has not loaded the card's JavaScript.
 
 1. Confirm **Timer Panel Card** is downloaded in Marketplace (HACS on older versions), not only added as a repository.
 2. Open **Settings → Dashboards → Resources**. Enable Advanced mode in your profile if Resources
-   is hidden. For HACS, check for this URL with type **JavaScript module**:
+   is hidden. Check for a **JavaScript module** with the path for your installation:
 
-   ```text
-   /hacsfiles/timer-panel-card/timer-panel-card.js
-   ```
+   | Installation | Resource path |
+   | --- | --- |
+   | Marketplace (Home Assistant 2026.11+) | `/local/community/timer-panel-card/timer-panel-card.js` |
+   | HACS on older versions | `/hacsfiles/timer-panel-card/timer-panel-card.js` |
 
-3. If missing, add it. Keep one resource entry; remove an old `/local/timer-panel-card.js` entry
-   after switching from manual installation to HACS.
+   An existing resource may have a version query string. Marketplace keeps migrated HACS paths
+   working, so an existing `/hacsfiles/` entry may still be valid.
+
+3. If missing, add it. Keep one resource entry for the card. Remove an old
+   `/local/timer-panel-card.js` entry after switching from manual resource management.
 4. Reload the dashboard. If needed, hard-refresh with Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R
    (macOS). In the Companion app, use **Settings → Reset frontend cache**.
 
@@ -91,7 +97,7 @@ Update or redownload the card in Marketplace (HACS on older versions), then hard
 Companion app's frontend cache. Check that there is only one resource loading this card.
 
 For a manual installation, replace the file and change the resource URL's query string, for
-example `/local/timer-panel-card.js?v=1.0.4`. Change the query again for each future version.
+example `/local/timer-panel-card.js?v=1.0.5`. Change the query again for each future version.
 The browser's developer console prints `TIMER-PANEL-CARD` followed by the loaded version.
 
 ## Manual resource installation
@@ -103,7 +109,7 @@ including when testing a local change. On older Home Assistant versions, HACS pr
 1. Download `timer-panel-card.js` from the [latest release](https://github.com/JustBeanie/timer-panel-card/releases/latest).
 2. Copy it to your Home Assistant configuration directory's `www` folder, creating that folder
    if needed. The resulting path is `<config>/www/timer-panel-card.js`.
-3. Under **Settings → Dashboards → Resources**, add `/local/timer-panel-card.js?v=1.0.4` as a
+3. Under **Settings → Dashboards → Resources**, add `/local/timer-panel-card.js?v=1.0.5` as a
    **JavaScript module**. Use the downloaded release's version in the query string.
 4. Refresh the dashboard and follow [Add the panel](../README.md#3-add-the-panel).
 

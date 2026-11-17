@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-11-17
+
+- Add a project icon to the README and Marketplace repository details.
+- Keep keyboard focus on buttons across unrelated Home Assistant state updates.
+- Stop countdown intervals when the card is detached or the timer is missing, unavailable, or expired.
+- Handle invalid countdown data without displaying an invalid time or progress bar.
+- Show configured device attributes with a value of zero or false.
+- Document Marketplace resource URLs alongside the paths used by older HACS installations.
+
 ## [1.0.4] - 2026-11-16
 
 - Add README status badges matching the other Beanie repositories, including HACS Default.

@@ -7,6 +7,8 @@
 [![Open issues](https://img.shields.io/github/issues/JustBeanie/timer-panel-card)](https://github.com/JustBeanie/timer-panel-card/issues)
 [![License](https://img.shields.io/github/license/JustBeanie/timer-panel-card)](LICENSE)
 
+![Timer Panel Card icon](docs/icon.svg)
+
 Give your Home Assistant timer a place on your dashboard: preset buttons when idle, a live
 countdown and progress bar when running, and the device's status alongside it.
 

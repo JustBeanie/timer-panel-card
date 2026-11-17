@@ -1,6 +1,6 @@
 /*! timer-panel-card — one panel per timer: live countdown, drain bar, state-aware controls. MIT. */
 
-const VERSION = "1.0.4";
+const VERSION = "1.0.5";
 
 console.info(
   `%c TIMER-PANEL-CARD %c ${VERSION} `,
@@ -11,6 +11,7 @@ console.info(
 const IDLE = "idle";
 const ACTIVE = "active";
 const PAUSED = "paused";
+const UNAVAILABLE_STATES = new Set(["unavailable", "unknown"]);
 
 /* The frontend's own default composition for a full entity name. */
 const FULL_NAME = [{ type: "parent_device" }, { type: "device" }, { type: "entity" }];
@@ -24,11 +25,12 @@ function capitalise(text) {
 
 /* "0:30:00" / "1:05:09" / 90 -> seconds. HA hands timers back as H:MM:SS strings. */
 function toSeconds(value) {
-  if (value === null || value === undefined) return 0;
-  if (typeof value === "number") return value;
-  const parts = String(value).split(":").map(Number);
-  if (parts.some(Number.isNaN)) return 0;
-  return parts.reduce((total, part) => total * 60 + part, 0);
+  if (typeof value === "number") return Number.isFinite(value) && value >= 0 ? value : null;
+  if (typeof value !== "string" || !value.trim()) return null;
+  const parts = value.split(":").map((part) => part.trim() ? Number(part) : NaN);
+  if (parts.some((part) => !Number.isFinite(part) || part < 0)) return null;
+  const seconds = parts.reduce((total, part) => total * 60 + part, 0);
+  return Number.isFinite(seconds) ? seconds : null;
 }
 
 function formatRemaining(seconds) {
@@ -49,7 +51,7 @@ class TimerPanelCard extends HTMLElement {
   }
 
   static getStubConfig(hass) {
-    const timer = Object.keys(hass.states).find((id) => id.startsWith("timer."));
+    const timer = Object.keys(hass?.states ?? {}).find((id) => id.startsWith("timer."));
     return {
       timer: timer || "timer.example",
       idle_buttons: [
@@ -82,12 +84,20 @@ class TimerPanelCard extends HTMLElement {
       running_buttons: [],
       ...config,
     };
-    this._els = null;
-    if (this.shadowRoot) this.shadowRoot.innerHTML = "";
+    this._buttonList = undefined;
+    this._update();
   }
 
   set hass(hass) {
     this._hass = hass;
+    this._update();
+  }
+
+  _update() {
+    if (!this._config || !this._hass?.states) {
+      this._stop();
+      return;
+    }
     if (!this._els) this._build();
     this._render();
   }
@@ -103,7 +113,7 @@ class TimerPanelCard extends HTMLElement {
   }
 
   connectedCallback() {
-    this._sync();
+    this._update();
   }
 
   disconnectedCallback() {
@@ -111,35 +121,22 @@ class TimerPanelCard extends HTMLElement {
   }
 
   _stop() {
-    if (this._interval) {
+    if (this._interval !== null) {
       clearInterval(this._interval);
       this._interval = null;
     }
   }
 
-  /* Tick once a second only while a timer is actually counting down. */
-  _sync() {
-    const state = this._timerState();
-    if (state === ACTIVE && !this._interval) {
-      this._interval = setInterval(() => this._paint(), 1000);
-    } else if (state !== ACTIVE) {
+  /* Tick only while a connected card has a valid countdown in progress. */
+  _syncCountdown(timer) {
+    if (!this._paintCountdown(timer) || !this.isConnected) {
       this._stop();
+    } else if (this._interval === null) {
+      this._interval = setInterval(() => {
+        const current = this._hass?.states?.[this._config.timer];
+        if (!this._paintCountdown(current)) this._stop();
+      }, 1000);
     }
-  }
-
-  _timerState() {
-    const obj = this._hass && this._hass.states[this._config.timer];
-    return obj ? obj.state : IDLE;
-  }
-
-  _remaining() {
-    const obj = this._hass.states[this._config.timer];
-    if (!obj) return 0;
-    if (obj.state === ACTIVE && obj.attributes.finishes_at) {
-      return (new Date(obj.attributes.finishes_at).getTime() - Date.now()) / 1000;
-    }
-    if (obj.state === PAUSED) return toSeconds(obj.attributes.remaining);
-    return 0;
   }
 
   _build() {
@@ -294,38 +291,32 @@ class TimerPanelCard extends HTMLElement {
     const cfg = this._config;
     const els = this._els;
     const timer = this._hass.states[cfg.timer];
-
-    if (!timer) {
-      els.name.textContent = cfg.name || cfg.timer;
-      els.secondary.textContent = `Entity not found: ${cfg.timer}`;
-      els.secondary.classList.add("missing");
-      els.time.hidden = true;
-      els.track.hidden = true;
-      els.buttons.hidden = true;
-      return;
-    }
-
-    els.secondary.classList.remove("missing");
-
-    const device = cfg.device ? this._hass.states[cfg.device] : null;
-    const state = timer.state;
+    const device = this._hass.states[cfg.device];
+    const state = timer?.state;
+    const unavailable = !timer || UNAVAILABLE_STATES.has(state);
     const running = state === ACTIVE || state === PAUSED;
-
     els.name.textContent = this._title(timer, device);
-
-    els.icon.setAttribute("icon", cfg.icon || timer.attributes.icon || "mdi:timer-outline");
-    els.secondary.textContent = this._secondaryText(timer, device);
-
-    this._renderButtons(running ? cfg.running_buttons : cfg.idle_buttons);
+    els.icon.setAttribute("icon", cfg.icon || timer?.attributes.icon || "mdi:timer-outline");
+    els.secondary.classList.toggle("missing", unavailable);
+    if (!timer) {
+      els.secondary.textContent = `Entity not found: ${cfg.timer}`;
+    } else if (unavailable) {
+      els.secondary.textContent = "Timer unavailable";
+    } else {
+      els.secondary.textContent = this._secondaryText(timer, device);
+    }
+    const buttonList = running ? cfg.running_buttons : cfg.idle_buttons;
+    this._renderButtons(unavailable ? null : buttonList);
 
     els.footer.textContent = cfg.footer || "";
-    els.footer.hidden = !cfg.footer;
-
+    els.footer.hidden = !cfg.footer || unavailable;
     els.time.hidden = !running;
-    els.track.hidden = !running;
-
-    this._paint();
-    this._sync();
+    const deviceOn = !unavailable && device && !OFF_STATES.has(device.state);
+    els.card.style.setProperty(
+      "--panel-color",
+      deviceOn ? "var(--state-active-color, var(--primary-color))" : "var(--secondary-text-color)"
+    );
+    this._syncCountdown(timer);
   }
 
   /* Title: a typed `name` wins, then the device's name, then the timer's. Since 2026.11 Home
@@ -335,6 +326,7 @@ class TimerPanelCard extends HTMLElement {
     const name = this._config.name;
     if (typeof name === "string" && name) return name;
     const subject = device || timer;
+    if (!subject) return this._config.timer;
     if (name && typeof name === "object") {
       const formatted = this._entityName(subject, name);
       if (formatted) return formatted;
@@ -347,7 +339,7 @@ class TimerPanelCard extends HTMLElement {
       try {
         const formatted = this._hass.formatEntityName(stateObj, parts);
         if (formatted) return formatted;
-      } catch (err) {
+      } catch {
         /* Malformed name config or an older helper: fall back below. */
       }
     }
@@ -361,15 +353,17 @@ class TimerPanelCard extends HTMLElement {
     const parts = [];
     if (device) {
       parts.push(this._hass.formatEntityState ? this._hass.formatEntityState(device) : device.state);
-      if (cfg.device_attribute && device.attributes[cfg.device_attribute]) {
-        parts.push(String(device.attributes[cfg.device_attribute]));
+      const attribute = device.attributes[cfg.device_attribute];
+      if (cfg.device_attribute && attribute != null && attribute !== "") {
+        parts.push(String(attribute));
       }
     }
 
     let note = "";
     if (timer.state === PAUSED) note = "paused";
-    else if (timer.state === ACTIVE && timer.attributes.finishes_at) {
-      note = "ends " + this._clock(timer.attributes.finishes_at);
+    else if (timer.state === ACTIVE) {
+      const finish = Date.parse(timer.attributes.finishes_at);
+      note = Number.isFinite(finish) ? "ends " + this._clock(finish) : "finish time unavailable";
     } else if (timer.state === IDLE && (!device || !OFF_STATES.has(device.state))) {
       /* "Off" already says there is nothing running — only add this when it tells you something. */
       note = "no timer set";
@@ -379,32 +373,31 @@ class TimerPanelCard extends HTMLElement {
     return parts.join(" · ");
   }
 
-  _clock(isoString) {
+  _clock(timestamp) {
     const locale = (this._hass.locale && this._hass.locale.language) || navigator.language;
-    return new Date(isoString).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" });
+    return new Date(timestamp).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" });
   }
 
-  /* Colour is the only thing that reports urgency, so it is derived, never configured per state. */
-  _paint() {
+  _paintCountdown(timer) {
     const els = this._els;
-    if (!els || !this._hass) return;
-    const timer = this._hass.states[this._config.timer];
-    if (!timer) return;
-
-    const state = timer.state;
-    if (state === IDLE) {
-      const device = this._config.device ? this._hass.states[this._config.device] : null;
-      const deviceOn = device && !OFF_STATES.has(device.state);
-      els.card.style.setProperty(
-        "--panel-color",
-        deviceOn ? "var(--state-active-color, var(--primary-color))" : "var(--secondary-text-color)"
-      );
-      return;
+    const state = timer?.state;
+    if (state !== ACTIVE && state !== PAUSED) {
+      els.track.hidden = true;
+      return false;
     }
 
-    const remaining = this._remaining();
-    const total = toSeconds(timer.attributes.duration) || remaining || 1;
-    const ratio = Math.max(0, Math.min(1, remaining / total));
+    const remaining = state === ACTIVE
+      ? (Date.parse(timer.attributes.finishes_at) - Date.now()) / 1000
+      : toSeconds(timer.attributes.remaining);
+    if (!Number.isFinite(remaining)) {
+      els.time.textContent = "—";
+      els.track.hidden = true;
+      return false;
+    }
+
+    const positiveRemaining = Math.max(0, remaining);
+    const total = toSeconds(timer.attributes.duration) || positiveRemaining || 1;
+    const ratio = Math.min(1, positiveRemaining / total);
 
     let color = "var(--primary-color)";
     if (remaining <= this._config.warn_seconds) color = "var(--error-color)";
@@ -412,16 +405,18 @@ class TimerPanelCard extends HTMLElement {
 
     els.card.style.setProperty("--panel-color", color);
     els.time.textContent = formatRemaining(remaining);
+    els.track.hidden = false;
     els.fill.style.width = `${(ratio * 100).toFixed(2)}%`;
-
-    if (remaining <= 0 && state === ACTIVE) {
-      this._stop();
-    }
+    return state === ACTIVE && remaining > 0;
   }
 
   _renderButtons(list) {
+    list = Array.isArray(list) ? list : null;
+    // Keep the same DOM nodes (and keyboard focus) across unrelated state updates.
+    if (list === this._buttonList) return;
+    this._buttonList = list;
     const els = this._els;
-    const buttons = Array.isArray(list) ? list : [];
+    const buttons = list?.filter((item) => item && typeof item === "object") ?? [];
     els.buttons.hidden = buttons.length === 0;
     els.buttons.innerHTML = "";
 
@@ -473,7 +468,7 @@ class TimerPanelCard extends HTMLElement {
 
     /* perform-action, plus the legacy call-service spelling. */
     const service = action.perform_action || action.service;
-    if (!service || !service.includes(".")) {
+    if (typeof service !== "string" || !service.includes(".")) {
       console.warn("timer-panel-card: button has no usable action", action);
       return;
     }
