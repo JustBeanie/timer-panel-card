@@ -1,0 +1,17 @@
+# Paste into Dashboard > Edit > Add card > Manual.
+# Replace the example entity IDs with your own.
+type: custom:timer-panel-card
+timer: timer.kitchen
+idle_buttons:
+  - label: 15m
+    action:
+      action: perform-action
+      perform_action: timer.start
+      data:
+        duration: "00:15:00"
+running_buttons:
+  - label: Cancel
+    style: danger
+    action:
+      action: perform-action
+      perform_action: timer.cancel
