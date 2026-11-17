@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-11-17
+
+- Set up Timer Panel Card from the dashboard card picker with Home Assistant’s visual editor.
+- Select a timer and companion entity, edit appearance and warning thresholds, and add, reorder, or remove buttons.
+- Configure button actions with Home Assistant selectors. Existing YAML configurations are still supported.
+
 ## [1.0.5] - 2026-11-17
 
 - Add a project icon to the README and Marketplace repository details.

@@ -6,7 +6,7 @@ This is a documentation comparison, not an installation or performance benchmark
 
 **Yes, other cards already cover much of this card's behavior.** A live countdown, draining bar,
 presets, and state-dependent actions are not unique features. Timer Panel Card is a small,
-YAML-configured presentation of one existing timer and an optional companion entity.
+presentation of one existing timer and an optional companion entity, with visual and YAML editing.
 
 | Option | Overlap and strengths | When to choose it |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ YAML-configured presentation of one existing timer and an optional companion ent
 | [Switch and Timer Bar Card](https://github.com/cataseven/Switch-and-Timer-Bar-Card) | Device plus timer progress, domain-aware start/stop, duration editing, sensor context, visual editor, and an automation-linked mode. Its optional direct-control mode needs an open browser for timely auto-off. | The closest device-control alternative when its start/stop workflow fits. |
 | [Timer Bar Card](https://github.com/rianadon/timer-bar-card) | Countdown/progress, multiple timer-like integrations, tap/hold/double-tap actions, threshold styling, and optional Paper Buttons Row controls. | Flexible timer displays or an existing dashboard composed from several cards. Additional cards/templates can approximate this panel. |
 | [TimeFlow Card](https://github.com/Rishi8078/TimeFlow-Card) | Countdown/count-up displays, circular progress and several display styles. | A time-focused display with more visual customization. |
-| Timer Panel Card | One native timer, optional companion state/attribute, labeled `idle_buttons` and `running_buttons`, and theme-based urgency colors. One JS module with no runtime dependencies or build step. | A compact device panel with an explicit, short YAML configuration and existing backend automations. |
+| Timer Panel Card | One native timer, optional companion status, labeled button groups, warning colors, and a visual editor. One JavaScript module with no runtime dependencies or build step. | A compact device panel with two configurable sets of controls and existing backend automations. |
 
 Simple Timer Card, Switch and Timer Bar Card, Timer Bar Card, and TimeFlow Card were all present
 in `hacs/default` at the initial comparison. Timer Panel Card has since been
@@ -28,7 +28,7 @@ and a small single-purpose implementation. It is not an exclusive feature claim.
 Simple Timer Card's state-filtered action buttons already cover much of the same control logic.
 Someone happy with that card may have no reason to switch.
 
-Timer Panel Card has no visual editor, multi-timer discovery, local timers, MQTT timer storage,
+Timer Panel Card has no multi-timer discovery, local timers, MQTT timer storage,
 or notifications. It also does not create the automation that shuts down a device. Active and
 paused timers share one button group, and service validity remains the configuration author's
 responsibility. Its action handler implements only the subset in the [configuration reference](configuration.md#buttons).
