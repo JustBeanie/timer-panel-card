@@ -46,6 +46,11 @@ do not move a tag for an already published release.
 
 ## Submitting to hacs/default
 
+**Current status:** [PR #14348](https://github.com/hacs/default/pull/14348) is merged and this
+repository is included in the default plugin list. Normal updates use this repository's release
+workflow; do not submit a new default-list PR for each release. The steps below document the
+initial inclusion process.
+
 The repository owner or a major contributor must submit. First confirm the release workflow
 above succeeded, no checks were ignored, and the latest release contains the expected JS file,
 manifest, README/image, and license.
@@ -64,7 +69,8 @@ not dashboard cards. Include the [comparison](alternatives.md) when explaining t
 
 The submission must pass upstream JSON/sorting and repository checks. Maintainers control review
 and acceptance; a passing action or custom-repository installation does not mean the card is in
-the default catalog. Keep the README's custom-repository instructions until inclusion is merged.
+the default catalog. After inclusion is merged, lead installation with a catalog search and keep
+custom-repository instructions as a fallback for users whose catalog has not updated.
 
 ## Official references
 

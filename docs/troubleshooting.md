@@ -2,6 +2,18 @@
 
 [Quick start](../README.md#quick-start) · [Configuration](configuration.md) · [Examples](../examples/README.md)
 
+## Cannot find the card in HACS
+
+Timer Panel Card is in the [default catalog](https://github.com/hacs/default/pull/14348).
+Refresh HACS/Marketplace and search for **Timer Panel Card**. A newly approved listing can take
+up to eight hours to appear, according to the [HACS approval notice](https://github.com/hacs/default/pull/14348#issuecomment-6940677926).
+
+If your catalog has not updated, use this fallback:
+
+1. Open HACS/Marketplace → three-dot menu → **Custom repositories**.
+2. Add `https://github.com/JustBeanie/timer-panel-card` with category **Dashboard**.
+3. Search for **Timer Panel Card**, download it, and refresh your browser.
+
 ## “Custom element doesn't exist: timer-panel-card”
 
 The browser has not loaded the card's JavaScript.
@@ -79,7 +91,7 @@ Update or redownload the card in HACS/Marketplace, then hard-refresh the browser
 Companion app's frontend cache. Check that there is only one resource loading this card.
 
 For a manual installation, replace the file and change the resource URL's query string, for
-example `/local/timer-panel-card.js?v=1.0.3`. Change the query again for each future version.
+example `/local/timer-panel-card.js?v=1.0.4`. Change the query again for each future version.
 The browser's developer console prints `TIMER-PANEL-CARD` followed by the loaded version.
 
 ## Manual installation
@@ -87,7 +99,7 @@ The browser's developer console prints `TIMER-PANEL-CARD` followed by the loaded
 1. Download `timer-panel-card.js` from the [latest release](https://github.com/JustBeanie/timer-panel-card/releases/latest).
 2. Copy it to your Home Assistant configuration directory's `www` folder, creating that folder
    if needed. The resulting path is `<config>/www/timer-panel-card.js`.
-3. Under **Settings → Dashboards → Resources**, add `/local/timer-panel-card.js?v=1.0.3` as a
+3. Under **Settings → Dashboards → Resources**, add `/local/timer-panel-card.js?v=1.0.4` as a
    **JavaScript module**. Use the downloaded release's version in the query string.
 4. Refresh the dashboard and follow [Add the panel](../README.md#3-add-the-panel).
 

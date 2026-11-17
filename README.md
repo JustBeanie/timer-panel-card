@@ -1,11 +1,18 @@
 # Timer Panel Card
 
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/default/pull/14348)
+[![Latest release](https://img.shields.io/github/v/release/JustBeanie/timer-panel-card?display_name=tag&sort=semver)](https://github.com/JustBeanie/timer-panel-card/releases/latest)
+[![HACS validation](https://github.com/JustBeanie/timer-panel-card/actions/workflows/hacs.yaml/badge.svg?branch=main)](https://github.com/JustBeanie/timer-panel-card/actions/workflows/hacs.yaml)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/JustBeanie/timer-panel-card?label=activity)](https://github.com/JustBeanie/timer-panel-card/commits/main/)
+[![Open issues](https://img.shields.io/github/issues/JustBeanie/timer-panel-card)](https://github.com/JustBeanie/timer-panel-card/issues)
+[![License](https://img.shields.io/github/license/JustBeanie/timer-panel-card)](LICENSE)
+
 Give your Home Assistant timer a place on your dashboard: preset buttons when idle, a live
 countdown and progress bar when running, and the device's status alongside it.
 
 ![Timer Panel Card preview: running on the left, idle on the right](docs/card.svg)
 
-[![Add Timer Panel Card to HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=JustBeanie&repository=timer-panel-card&category=frontend)
+[![Open Timer Panel Card in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=JustBeanie&repository=timer-panel-card&category=frontend)
 
 [Quick start](#quick-start) · [Examples](examples/README.md) · [All options](docs/configuration.md) · [Troubleshooting](docs/troubleshooting.md)
 
@@ -20,14 +27,13 @@ notifications need separate Home Assistant automations.
 
 ### 1. Install the card
 
-Click the HACS button above, then download **Timer Panel Card**. If adding it by hand:
+Timer Panel Card is included in the default HACS catalog. Click the HACS button above, or:
 
 1. Open **Marketplace** (Home Assistant 2026.11+) or **HACS** on older versions.
-2. Open the three-dot menu → **Custom repositories**.
-3. Paste `https://github.com/JustBeanie/timer-panel-card` and choose **Dashboard**.
-4. Find **Timer Panel Card**, download it, and refresh your browser.
+2. Search for **Timer Panel Card** and open it.
+3. Download the card, then refresh your browser.
 
-Available now as a custom repository. [Default HACS listing is pending review](https://github.com/hacs/default/pull/14348).
+Can't find it yet? [Refresh the catalog or add the repository manually](docs/troubleshooting.md#cannot-find-the-card-in-hacs).
 For an installation without HACS, use the [manual installation steps](docs/troubleshooting.md#manual-installation).
 
 ### 2. Choose a timer
