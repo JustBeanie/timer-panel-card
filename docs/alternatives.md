@@ -18,7 +18,8 @@ YAML-configured presentation of one existing timer and an optional companion ent
 | Timer Panel Card | One native timer, optional companion state/attribute, labeled `idle_buttons` and `running_buttons`, and theme-based urgency colors. One JS module with no runtime dependencies or build step. | A compact device panel with an explicit, short YAML configuration and existing backend automations. |
 
 Simple Timer Card, Switch and Timer Bar Card, Timer Bar Card, and TimeFlow Card were all present
-in `hacs/default` on the review date. Timer Panel Card was not.
+in `hacs/default` at the initial comparison. Timer Panel Card has since been
+[approved and added](https://github.com/hacs/default/pull/14348).
 
 ## What distinguishes this project
 
@@ -30,7 +31,7 @@ Someone happy with that card may have no reason to switch.
 Timer Panel Card has no visual editor, multi-timer discovery, local timers, MQTT timer storage,
 or notifications. It also does not create the automation that shuts down a device. Active and
 paused timers share one button group, and service validity remains the configuration author's
-responsibility. Its action handler implements only the subset documented in the README.
+responsibility. Its action handler implements only the subset in the [configuration reference](configuration.md#buttons).
 
 ## Default HACS eligibility
 
