@@ -5,12 +5,12 @@
 ## Cannot find the card in HACS
 
 Timer Panel Card is in the [default catalog](https://github.com/hacs/default/pull/14348).
-Refresh HACS/Marketplace and search for **Timer Panel Card**. A newly approved listing can take
+Refresh Marketplace (HACS on older versions) and search for **Timer Panel Card**. A newly approved listing can take
 up to eight hours to appear, according to the [HACS approval notice](https://github.com/hacs/default/pull/14348#issuecomment-6940677926).
 
 If your catalog has not updated, use this fallback:
 
-1. Open HACS/Marketplace → three-dot menu → **Custom repositories**.
+1. Open Marketplace (HACS on older versions) → three-dot menu → **Custom repositories**.
 2. Add `https://github.com/JustBeanie/timer-panel-card` with category **Dashboard**.
 3. Search for **Timer Panel Card**, download it, and refresh your browser.
 
@@ -18,7 +18,7 @@ If your catalog has not updated, use this fallback:
 
 The browser has not loaded the card's JavaScript.
 
-1. Confirm **Timer Panel Card** is downloaded in HACS/Marketplace, not only added as a repository.
+1. Confirm **Timer Panel Card** is downloaded in Marketplace (HACS on older versions), not only added as a repository.
 2. Open **Settings → Dashboards → Resources**. Enable Advanced mode in your profile if Resources
    is hidden. For HACS, check for this URL with type **JavaScript module**:
 
@@ -87,14 +87,18 @@ or reload it. This does not pause the timer running in Home Assistant.
 
 ## The card still looks like an older version
 
-Update or redownload the card in HACS/Marketplace, then hard-refresh the browser or reset the
+Update or redownload the card in Marketplace (HACS on older versions), then hard-refresh the browser or reset the
 Companion app's frontend cache. Check that there is only one resource loading this card.
 
 For a manual installation, replace the file and change the resource URL's query string, for
 example `/local/timer-panel-card.js?v=1.0.4`. Change the query again for each future version.
 The browser's developer console prints `TIMER-PANEL-CARD` followed by the loaded version.
 
-## Manual installation
+## Manual resource installation
+
+Marketplace is built into Home Assistant 2026.11 and newer and is the recommended installation
+method. These steps are an advanced alternative for managing the JavaScript resource yourself,
+including when testing a local change. On older Home Assistant versions, HACS provides the catalog.
 
 1. Download `timer-panel-card.js` from the [latest release](https://github.com/JustBeanie/timer-panel-card/releases/latest).
 2. Copy it to your Home Assistant configuration directory's `www` folder, creating that folder

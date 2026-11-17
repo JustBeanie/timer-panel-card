@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add README status badges matching the other Beanie repositories, including HACS Default.
 - Address HACS review feedback: lead installation with a catalog search and keep custom setup as a fallback.
+- Clarify that Marketplace is built into Home Assistant 2026.11+; manual resource management is an advanced option.
 - Record default HACS inclusion in the documentation. Runtime behavior is unchanged.
 - Reorganize the README around installation, a first working panel, and common customizations.
 - Add copyable examples, a configuration reference, troubleshooting, and contributor guidance.
