@@ -10,7 +10,7 @@
 [![Open issues](https://img.shields.io/github/issues/JustBeanie/timer-panel-card?style=flat-square)](https://github.com/JustBeanie/timer-panel-card/issues)
 [![License](https://img.shields.io/github/license/JustBeanie/timer-panel-card?style=flat-square)](LICENSE)
 
-![Timer Panel Card icon](docs/icon.svg)
+<img src="docs/icon.svg" alt="Timer Panel Card icon" align="middle"> <a href="https://www.buymeacoffee.com/JustBeanie"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" width="80" align="middle"></a>
 
 Give your Home Assistant timer a place on your dashboard: preset buttons when idle, a live
 countdown and progress bar when running, and the device's status alongside it.
@@ -103,9 +103,6 @@ and update its resource URL's version query. [Update and cache help](docs/troubl
 
 Documentation fixes, bug reports, and pull requests are welcome. See [Contributing](CONTRIBUTING.md)
 for the project layout and checks, and [Publishing](docs/publishing.md) for release instructions.
-
-[![Buy me a coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/JustBeanie)
-
 ## License
 
 [MIT](LICENSE)
