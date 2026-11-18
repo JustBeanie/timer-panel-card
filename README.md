@@ -1,11 +1,14 @@
 # Timer Panel Card
 
-[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/default/pull/14348)
-[![Latest release](https://img.shields.io/github/v/release/JustBeanie/timer-panel-card?display_name=tag&sort=semver)](https://github.com/JustBeanie/timer-panel-card/releases/latest)
-[![HACS validation](https://github.com/JustBeanie/timer-panel-card/actions/workflows/hacs.yaml/badge.svg?branch=main)](https://github.com/JustBeanie/timer-panel-card/actions/workflows/hacs.yaml)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/JustBeanie/timer-panel-card?label=activity)](https://github.com/JustBeanie/timer-panel-card/commits/main/)
-[![Open issues](https://img.shields.io/github/issues/JustBeanie/timer-panel-card)](https://github.com/JustBeanie/timer-panel-card/issues)
-[![License](https://img.shields.io/github/license/JustBeanie/timer-panel-card)](LICENSE)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-1479A8?style=flat-square&logo=homeassistant)](https://github.com/hacs/default/pull/14348)
+[![Latest release](https://img.shields.io/github/v/release/JustBeanie/timer-panel-card?display_name=tag&sort=semver&style=flat-square)](https://github.com/JustBeanie/timer-panel-card/releases/latest)
+[![Total card downloads](https://img.shields.io/github/downloads/JustBeanie/timer-panel-card/timer-panel-card.js?label=total%20downloads&displayAssetName=false&style=flat-square&color=1479A8)](https://github.com/JustBeanie/timer-panel-card/releases)
+[![Latest release card downloads](https://img.shields.io/github/downloads/JustBeanie/timer-panel-card/latest/timer-panel-card.js?sort=semver&label=latest%20downloads&displayAssetName=false&style=flat-square&color=1479A8)](https://github.com/JustBeanie/timer-panel-card/releases/latest)
+
+[![HACS validation](https://img.shields.io/github/actions/workflow/status/JustBeanie/timer-panel-card/hacs.yaml?branch=main&label=HACS%20validation&style=flat-square)](https://github.com/JustBeanie/timer-panel-card/actions/workflows/hacs.yaml)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/JustBeanie/timer-panel-card?label=activity&style=flat-square)](https://github.com/JustBeanie/timer-panel-card/commits/main/)
+[![Open issues](https://img.shields.io/github/issues/JustBeanie/timer-panel-card?style=flat-square)](https://github.com/JustBeanie/timer-panel-card/issues)
+[![License](https://img.shields.io/github/license/JustBeanie/timer-panel-card?style=flat-square)](LICENSE)
 
 ![Timer Panel Card icon](docs/icon.svg)
 
@@ -100,6 +103,8 @@ and update its resource URL's version query. [Update and cache help](docs/troubl
 
 Documentation fixes, bug reports, and pull requests are welcome. See [Contributing](CONTRIBUTING.md)
 for the project layout and checks, and [Publishing](docs/publishing.md) for release instructions.
+
+[![Buy me a coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/JustBeanie)
 
 ## License
 
