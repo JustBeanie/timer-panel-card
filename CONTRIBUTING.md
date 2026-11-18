@@ -12,7 +12,7 @@ for problems, or describe the task you want to accomplish in a
 | `dist/timer-panel-card.js` | Both the source and installable card. Edit this file directly. |
 | `hacs.json` | HACS display name, filename, and minimum HA version. |
 | `examples/` | Complete card configurations for users to copy. |
-| `docs/` | Configuration, troubleshooting, comparisons, and publishing. |
+| `docs/` | Images and links for guides in the [project wiki](https://github.com/JustBeanie/timer-panel-card/wiki). |
 | `scripts/check-release.mjs` | Distribution filename, version, and changelog checks. |
 | `.github/workflows/` | HACS validation and release publishing. |
 
@@ -29,13 +29,13 @@ for problems, or describe the task you want to accomplish in a
    git diff --check
    ```
 
-There is no `npm install` or build step. For documentation changes, check relative links and
+There is no `npm install` or build step. For documentation changes in the [project wiki](https://github.com/JustBeanie/timer-panel-card/wiki), check links and
 paste changed card examples into Home Assistant's card editor with your own entity IDs.
 Do not include personal dashboard configuration or credentials in the PR.
 
 ## Checking a card change
 
-Use a test dashboard and timer helper. Follow the [manual resource installation steps](docs/troubleshooting.md#manual-resource-installation)
+Use a test dashboard and timer helper. Follow the [manual resource installation steps](https://github.com/JustBeanie/timer-panel-card/wiki/Troubleshooting#manual-resource-installation)
 to load your edited JS, using a fresh resource URL query string after each change. Keep one
 resource registration; an existing HACS copy can otherwise mask your changes.
 
@@ -44,4 +44,4 @@ and keyboard activation; button targets; and light/dark themes at phone and desk
 Check the browser console for errors. If a behavior was not tested, say so in the PR.
 
 Open a PR describing the problem, resulting behavior, and checks you ran. GitHub runs package
-and HACS validation. See [Publishing](docs/publishing.md) for maintainer release instructions.
+and HACS validation. See [Publishing](https://github.com/JustBeanie/timer-panel-card/wiki/Publishing) for maintainer release instructions.

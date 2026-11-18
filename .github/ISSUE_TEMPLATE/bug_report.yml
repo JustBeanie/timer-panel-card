@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please check the [troubleshooting guide](https://github.com/JustBeanie/timer-panel-card/blob/main/docs/troubleshooting.md) first.
+        Please check the [troubleshooting guide](https://github.com/JustBeanie/timer-panel-card/wiki/Troubleshooting) first.
         Remove passwords, tokens, private URLs, and personal information before sharing.
   - type: input
     id: card_version
